@@ -123,6 +123,17 @@ function updateMapWindOverlay(wind) {
 
   overlay.classList.remove("hidden");
 
+  // Rotate the whole compass to match the park map's orientation.
+  // mapNorthDeg = degrees CW to rotate so the N label points toward map-North.
+  // e.g. Twisted Oaks has N on the left → mapNorthDeg: 270
+  var park = PARKS[state.parkId];
+  var mapNorthDeg = (park && park.mapNorthDeg) || 0;
+
+  var orientGroup = document.getElementById("map-compass-orient");
+  if (orientGroup) orientGroup.setAttribute("transform", "rotate(" + mapNorthDeg + ", 40, 40)");
+
+  // Wind arrow sits inside the orient group — its rotation is relative to that group,
+  // so the absolute screen direction = mapNorthDeg + fromDeg (correct map alignment).
   var arrow = document.getElementById("map-wind-arrow");
   if (arrow) arrow.setAttribute("transform", "rotate(" + wind.fromDeg + ", 40, 40)");
 

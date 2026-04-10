@@ -8,6 +8,7 @@ const PARKS = {
     location: "Brightwell, Ipswich, UK",
     coords: { lat: 52.03833778327689, lon: 1.2919455032460145 },
     mapImage: "twisted.jpg",
+    mapNorthDeg: 270,  // map is rotated 90° CCW: N=left, E=top, S=right, W=bottom
     trails: [
       // ── Cross Country (out-and-back — both directions shown) ──
       // defaultHeading = best estimate from trail map; user can confirm/override in Admin Mode
