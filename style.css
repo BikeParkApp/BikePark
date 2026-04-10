@@ -97,11 +97,60 @@ main {
   justify-content: center;
 }
 
+#map-container {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  line-height: 0; /* prevent gap under inline-block image */
+}
+
 #trail-map {
   max-width: 100%;
   border-radius: var(--radius);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
   display: block;
+}
+
+/* ── Map wind overlay ─────────────────────────────────── */
+
+.map-wind-overlay {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(13, 17, 23, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+}
+
+.map-wind-overlay.hidden { display: none; }
+
+.map-compass-ring {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.18);
+  stroke-width: 1;
+}
+
+.map-compass-label {
+  font-size: 9px;
+  fill: #7d8590;
+  font-family: sans-serif;
+  font-weight: 600;
+}
+
+#map-wind-label {
+  font-size: 11px;
+  color: #c9d1d9;
+  font-weight: 500;
+  white-space: nowrap;
+  font-family: sans-serif;
+  line-height: 1.4;
 }
 
 /* ── Sidebar ──────────────────────────────────────────── */

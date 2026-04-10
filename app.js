@@ -112,7 +112,22 @@ function updateWeatherDisplay(wind) {
     arrow.setAttribute("transform", "rotate(" + wind.fromDeg + ", 80, 80)");
   }
 
+  updateMapWindOverlay(wind);
   renderTrailList(wind);
+}
+
+function updateMapWindOverlay(wind) {
+  var overlay = document.getElementById("map-wind-overlay");
+  if (!overlay) return;
+  if (!wind) { overlay.classList.add("hidden"); return; }
+
+  overlay.classList.remove("hidden");
+
+  var arrow = document.getElementById("map-wind-arrow");
+  if (arrow) arrow.setAttribute("transform", "rotate(" + wind.fromDeg + ", 40, 40)");
+
+  var label = document.getElementById("map-wind-label");
+  if (label) label.textContent = Math.round(wind.speedMph) + " mph " + toCardinal(wind.fromDeg);
 }
 
 function getActiveWind() {

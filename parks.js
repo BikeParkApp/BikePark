@@ -6,7 +6,7 @@ const PARKS = {
     id: "twisted_oaks",
     name: "Twisted Oaks",
     location: "Brightwell, Ipswich, UK",
-    coords: { lat: 52.031, lon: 1.245 },
+    coords: { lat: 52.03833778327689, lon: 1.2919455032460145 },
     mapImage: "twisted.jpg",
     trails: [
       // ── Cross Country (out-and-back — both directions shown) ──
@@ -47,7 +47,7 @@ const PARKS = {
       { id: "or",           name: "OR – OrchRad",                  difficulty: "pro"    },
 
       // ── Jump Areas ─────────────────────────────────────
-      { id: "j1",           name: "J1 – Jump Area (Easy–Advanced)", difficulty: "mixed" },
+      { id: "j1",           name: "J1 – Dirt Jumps",                difficulty: "mixed" },
       { id: "j2",           name: "J2 – Jump Area (Training Zone)", difficulty: "blue"  },
       { id: "mj",           name: "MJ – Mulch Jumps",              difficulty: null     },
       { id: "ab",           name: "AB – Air Bag",                  difficulty: null     },
@@ -64,7 +64,7 @@ const PARKS = {
     id: "phoenix",
     name: "Phoenix",
     location: "UK",
-    coords: { lat: 0, lon: 0 },   // ← update with real coords
+    coords: { lat: 52.27233555036601, lon: 0.5158397352408948 },
     mapImage: "Phoenix.png",
     trails: [
       { id: "shop_west", name: "Shop Side West", difficulty: null, defaultHeading: 270 },
