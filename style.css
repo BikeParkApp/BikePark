@@ -1,0 +1,789 @@
+/* =========================================================
+   Bike Wind Checker — stylesheet
+   Dark theme, responsive 2-column → single-column on mobile
+   ========================================================= */
+
+:root {
+  --bg-base:      #0d1117;
+  --bg-surface:   #161b22;
+  --bg-raised:    #21262d;
+  --border:       #30363d;
+  --text-primary: #e6edf3;
+  --text-muted:   #7d8590;
+  --accent:       #3fb950;
+  --accent-dim:   #1a4220;
+
+  /* Trail difficulty */
+  --green:  #4caf50;
+  --blue:   #2196f3;
+  --red:    #ef5350;
+  --black:  #9e9e9e;
+  --blackp: #ffd700;
+
+  /* Wind impact */
+  --headwind:  #ef5350;
+  --tailwind:  #66bb6a;
+  --crosswind: #ffa726;
+  --unknown:   #546e7a;
+
+  --radius: 8px;
+  --sidebar-width: 380px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* ── Header ───────────────────────────────────────────── */
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 20px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.header-logo {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.header-logo span {
+  color: var(--text-primary);
+  font-weight: 400;
+}
+
+#park-selector {
+  margin-left: auto;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+#park-selector:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ── Main layout ──────────────────────────────────────── */
+
+main {
+  display: grid;
+  grid-template-columns: 1fr var(--sidebar-width);
+  min-height: calc(100vh - 57px);
+  align-items: start;
+}
+
+/* ── Map panel ────────────────────────────────────────── */
+
+#map-section {
+  padding: 24px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+#trail-map {
+  max-width: 100%;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+  display: block;
+}
+
+/* ── Sidebar ──────────────────────────────────────────── */
+
+#sidebar {
+  background: var(--bg-surface);
+  border-left: 1px solid var(--border);
+  min-height: calc(100vh - 57px);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Weather panel ────────────────────────────────────── */
+
+#weather-panel {
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.weather-main {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.wind-stats {
+  flex: 1;
+}
+
+.wind-speed-big {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.wind-speed-big sup {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-left: 2px;
+}
+
+.wind-from {
+  font-size: 1rem;
+  color: var(--accent);
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.wind-gusts {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+#weather-loading,
+#weather-error {
+  padding: 12px 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+#weather-error { color: var(--headwind); }
+
+/* Compass rose (weather display) */
+#compass-rose-wrap {
+  flex-shrink: 0;
+}
+
+#compass-rose {
+  display: block;
+}
+
+.compass-cardinal {
+  font-size: 11px;
+  font-weight: 700;
+  fill: var(--text-muted);
+  font-family: inherit;
+}
+
+.compass-ring {
+  fill: none;
+  stroke: var(--border);
+}
+
+.compass-tick {
+  stroke: var(--border);
+}
+
+/* ── Forecast controls ────────────────────────────────── */
+
+#forecast-controls {
+  margin-top: 16px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+#forecast-controls select,
+#forecast-controls button {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 6px 10px;
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+#forecast-controls select { flex: 1; min-width: 90px; }
+
+#btn-live {
+  background: transparent;
+  border-color: var(--accent);
+  color: var(--accent);
+  font-size: 0.8rem;
+  padding: 6px 10px;
+}
+
+#btn-live:hover { background: var(--accent-dim); }
+
+#btn-forecast {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0d1117;
+  font-weight: 600;
+}
+
+#btn-forecast:hover { opacity: 0.85; }
+
+#forecast-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  width: 100%;
+  margin-top: 2px;
+}
+
+/* ── Trail list ───────────────────────────────────────── */
+
+#trail-list {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.trail-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  margin-bottom: 6px;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  transition: border-color 0.15s;
+  cursor: pointer;
+  user-select: none;
+}
+
+.trail-row:hover { border-color: #484f58; }
+
+.trail-row.expanded {
+  border-color: var(--accent);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-bottom: 0;
+}
+
+/* ── Trail detail panel (click-to-expand) ─────────────── */
+
+.trail-detail-row {
+  background: rgba(63, 185, 80, 0.04);
+  border: 1px solid var(--accent);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  margin-bottom: 6px;
+  overflow: hidden;
+  animation: slideDown 0.14s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.trail-detail { padding: 12px 14px; }
+
+.detail-inner {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.detail-compass { flex-shrink: 0; }
+
+.detail-text {
+  flex: 1;
+  font-size: 0.83rem;
+  min-width: 0;
+}
+
+.detail-wind-info {
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.detail-gusts {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  margin-top: 2px;
+  text-transform: capitalize;
+}
+
+.detail-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 8px 0;
+}
+
+.detail-heading-line {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.detail-result-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.detail-angle-note {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.detail-leg {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.detail-leg-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.detail-leg-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.detail-no-heading {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 4px 0;
+}
+
+.difficulty-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.diff-green   { background: var(--green); }
+.diff-blue    { background: var(--blue); }
+.diff-bluep   { background: #29b6f6; }
+.diff-red     { background: var(--red); }
+.diff-redp    { background: #ff5722; }
+.diff-black   { background: var(--black); }
+.diff-blackp  { background: var(--blackp); }
+.diff-pro     { background: #e0e0e0; }
+.diff-mixed   { background: linear-gradient(135deg, var(--red) 50%, var(--black) 50%); }
+.diff-unknown { background: var(--unknown); }
+
+.trail-name {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.impact-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.impact-badge.headwind  { background: rgba(239,83,80,0.15);  color: var(--headwind); }
+.impact-badge.tailwind  { background: rgba(102,187,106,0.15); color: var(--tailwind); }
+.impact-badge.crosswind { background: rgba(255,167,38,0.15);  color: var(--crosswind); }
+.impact-badge.unknown   { background: rgba(84,110,122,0.15);  color: var(--unknown); }
+
+.severity-tag {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-left: 2px;
+}
+
+/* Two badges side by side for out-and-back trails */
+.impact-pair {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.impact-badge-mini {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 7px;
+  border-radius: 20px;
+  font-size: 0.73rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.impact-badge-mini.headwind  { background: rgba(239,83,80,0.15);   color: var(--headwind); }
+.impact-badge-mini.tailwind  { background: rgba(102,187,106,0.15); color: var(--tailwind); }
+.impact-badge-mini.crosswind { background: rgba(255,167,38,0.15);  color: var(--crosswind); }
+.impact-badge-mini.unknown   { background: rgba(84,110,122,0.15);  color: var(--unknown); }
+
+.btn-edit-heading {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 3px 8px;
+  border-radius: var(--radius);
+  font-size: 0.75rem;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: none;
+}
+
+.btn-edit-heading:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Estimated heading (defaultHeading, not manually confirmed) */
+.btn-edit-heading.heading-default {
+  color: var(--crosswind);
+  border-color: rgba(255,167,38,0.4);
+  font-style: italic;
+}
+
+/* ── Trail reorder buttons (admin mode only) ──────────── */
+
+.btn-move-group {
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.admin-mode .btn-move-group { display: flex; }
+
+.btn-move {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  width: 22px;
+  height: 20px;
+  border-radius: 4px;
+  font-size: 0.6rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+}
+
+.btn-move:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn-move:disabled {
+  opacity: 0.2;
+  cursor: default;
+}
+
+.admin-mode .btn-edit-heading { display: block; }
+
+/* ── Admin footer ─────────────────────────────────────── */
+
+#admin-footer {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+#btn-admin-toggle {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 7px 14px;
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  cursor: pointer;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#btn-admin-toggle:hover,
+#btn-admin-toggle.active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+#admin-hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: none;
+  width: 100%;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2px;
+}
+
+.admin-mode #admin-hint { display: block; }
+
+/* ── Config save / load ────────────────────────────────── */
+
+.config-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#btn-export,
+.btn-config-load {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 5px 10px;
+  border-radius: var(--radius);
+  font-size: 0.78rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+#btn-export:hover,
+.btn-config-load:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn-config-load input[type="file"] { display: none; }
+
+.config-msg {
+  font-size: 0.75rem;
+  font-weight: 600;
+  min-width: 56px;
+}
+
+.config-msg.ok    { color: var(--tailwind); }
+.config-msg.error { color: var(--headwind); }
+
+/* ── Compass modal ────────────────────────────────────── */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay.hidden { display: none; }
+
+.modal-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px 24px 24px;
+  width: 320px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+
+.modal-trail-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.modal-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: -8px;
+}
+
+#admin-compass {
+  cursor: grab;
+  display: block;
+  touch-action: none;
+  user-select: none;
+}
+
+#admin-compass:active { cursor: grabbing; }
+
+.admin-compass-label {
+  font-size: 11px;
+  font-weight: 700;
+  fill: var(--text-muted);
+  font-family: inherit;
+}
+
+.admin-compass-ring {
+  fill: var(--bg-base);
+  stroke: var(--border);
+}
+
+.admin-compass-tick { stroke: #444; }
+.admin-compass-tick-major { stroke: var(--border); }
+
+#heading-display {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--blackp);
+  letter-spacing: 0.02em;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.modal-buttons button {
+  flex: 1;
+  padding: 9px;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border);
+}
+
+#btn-modal-cancel {
+  background: transparent;
+  color: var(--text-muted);
+}
+
+#btn-modal-cancel:hover { border-color: #484f58; color: var(--text-primary); }
+
+#btn-modal-save {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0d1117;
+}
+
+#btn-modal-save:hover { opacity: 0.85; }
+
+/* ── Severity labels (wind speed) ────────────────────── */
+
+.severity-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-top: 6px;
+  text-transform: capitalize;
+}
+
+.sev-calm     { color: var(--text-muted); }
+.sev-light    { color: var(--tailwind); }
+.sev-moderate { color: var(--crosswind); }
+.sev-strong   { color: #ff7043; }
+.sev-severe   { color: var(--headwind); }
+
+/* ── Modal difficulty badge ───────────────────────────── */
+
+.modal-diff {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-top: -6px;
+}
+
+.diff-badge-green   { background: rgba(76,175,80,0.15);   color: var(--green); }
+.diff-badge-blue    { background: rgba(33,150,243,0.15);  color: var(--blue); }
+.diff-badge-bluep   { background: rgba(41,182,246,0.15);  color: #29b6f6; }
+.diff-badge-red     { background: rgba(239,83,80,0.15);   color: var(--red); }
+.diff-badge-redp    { background: rgba(255,87,34,0.15);   color: #ff5722; }
+.diff-badge-black   { background: rgba(158,158,158,0.15); color: var(--black); }
+.diff-badge-blackp  { background: rgba(255,215,0,0.15);   color: var(--blackp); }
+.diff-badge-pro     { background: rgba(224,224,224,0.15); color: #e0e0e0; }
+.diff-badge-mixed   { background: rgba(255,87,34,0.1);    color: #ff7043; }
+.diff-badge-unknown { background: rgba(84,110,122,0.15);  color: var(--unknown); }
+
+/* ── Utility ──────────────────────────────────────────── */
+
+.header-sub {
+  font-weight: 400;
+  color: var(--text-muted);
+  font-size: 0.95em;
+}
+
+.status-msg {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  padding: 4px 0 8px;
+}
+
+.status-msg.error { color: var(--headwind); }
+
+.trail-list-header {
+  padding: 16px 20px 4px;
+}
+
+/* ── Responsive ───────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  main {
+    grid-template-columns: 1fr;
+  }
+
+  #sidebar {
+    border-left: none;
+    border-top: 1px solid var(--border);
+    min-height: unset;
+  }
+
+  #map-section { padding: 16px; }
+}
+
+@media (max-width: 480px) {
+  .header-logo { font-size: 1.1rem; }
+  .wind-speed-big { font-size: 2rem; }
+  #forecast-controls { flex-direction: column; }
+  #forecast-controls select { width: 100%; }
+}

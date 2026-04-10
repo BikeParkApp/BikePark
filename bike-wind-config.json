@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "parks": {
+    "twisted_oaks": {
+      "headings": {
+        "j23": 187,
+        "fm": 180,
+        "ds": 209,
+        "ruhmtrousers": 284,
+        "mt": 203
+      },
+      "order": [
+        "bxc",
+        "rxc",
+        "blx",
+        "mt",
+        "ds",
+        "j23",
+        "bd",
+        "fm",
+        "hs",
+        "ruhmtrousers",
+        "bm",
+        "tc",
+        "je",
+        "t1",
+        "t2",
+        "st",
+        "dm",
+        "rattrap",
+        "bt",
+        "gr",
+        "ss",
+        "mo",
+        "pb",
+        "j1",
+        "or",
+        "j2",
+        "mj",
+        "ab",
+        "fx",
+        "dz",
+        "hp"
+      ]
+    }
+  }
+}

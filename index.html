@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bike Wind Checker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ── Header ─────────────────────────────────────────── -->
+  <header>
+    <div class="header-logo">
+      &#127795; <span id="park-name">Twisted Oaks</span>
+      <span class="header-sub">Wind Checker</span>
+    </div>
+    <select id="park-selector" title="Select park"></select>
+  </header>
+
+  <!-- ── Main layout ────────────────────────────────────── -->
+  <main>
+
+    <!-- Trail map -->
+    <section id="map-section">
+      <img id="trail-map" src="twisted.jpg" alt="Twisted Oaks trail map">
+    </section>
+
+    <!-- Right sidebar -->
+    <aside id="sidebar">
+
+      <!-- Weather panel -->
+      <div id="weather-panel">
+        <div class="section-title">Wind Conditions</div>
+
+        <p id="weather-loading" class="status-msg">Fetching weather&hellip;</p>
+        <p id="weather-error"   class="status-msg error" style="display:none"></p>
+
+        <div id="weather-content" style="display:none">
+
+          <!-- Wind stats + compass rose -->
+          <div class="weather-main">
+            <div class="wind-stats">
+              <div class="wind-speed-big">
+                <span id="wind-speed-val">--</span><sup>mph</sup>
+              </div>
+              <div class="wind-from" id="wind-from-val">--</div>
+              <div class="wind-gusts" id="wind-gusts-val"></div>
+              <div id="wind-severity" class="severity-label"></div>
+            </div>
+
+            <div id="compass-rose-wrap">
+              <svg id="compass-rose"
+                   viewBox="0 0 160 160" width="130" height="130"
+                   aria-label="Wind direction compass">
+                <!-- Rings -->
+                <circle cx="80" cy="80" r="70" class="compass-ring" stroke-width="1"/>
+                <circle cx="80" cy="80" r="2" fill="rgba(255,255,255,0.1)"/>
+
+                <!-- Cardinal tick marks -->
+                <line x1="80" y1="12" x2="80" y2="22" stroke="#484f58" stroke-width="2"/>
+                <line x1="148" y1="80" x2="138" y2="80" stroke="#484f58" stroke-width="2"/>
+                <line x1="80" y1="148" x2="80" y2="138" stroke="#484f58" stroke-width="2"/>
+                <line x1="12" y1="80" x2="22" y2="80" stroke="#484f58" stroke-width="2"/>
+
+                <!-- Intercardinal ticks (45°, 135°, 225°, 315°) -->
+                <line x1="130.5" y1="29.5" x2="123.4" y2="36.6" stroke="#333" stroke-width="1"/>
+                <line x1="130.5" y1="130.5" x2="123.4" y2="123.4" stroke="#333" stroke-width="1"/>
+                <line x1="29.5"  y1="130.5" x2="36.6"  y2="123.4" stroke="#333" stroke-width="1"/>
+                <line x1="29.5"  y1="29.5"  x2="36.6"  y2="36.6"  stroke="#333" stroke-width="1"/>
+
+                <!-- Cardinal labels -->
+                <text x="80"  y="10"  text-anchor="middle" class="compass-cardinal">N</text>
+                <text x="152" y="84"  text-anchor="middle" class="compass-cardinal">E</text>
+                <text x="80"  y="157" text-anchor="middle" class="compass-cardinal">S</text>
+                <text x="8"   y="84"  text-anchor="middle" class="compass-cardinal">W</text>
+
+                <!-- Wind arrow — points FROM wind source direction (rotated by JS) -->
+                <g id="wind-rose-arrow" transform="rotate(0, 80, 80)">
+                  <line x1="80" y1="78" x2="80" y2="22"
+                        stroke="#4fc3f7" stroke-width="3" stroke-linecap="round"/>
+                  <polygon points="80,12 74,28 86,28" fill="#4fc3f7"/>
+                  <!-- Tail dot -->
+                  <circle cx="80" cy="142" r="3.5" fill="rgba(79,195,247,0.35)"/>
+                </g>
+
+                <!-- Center -->
+                <circle cx="80" cy="80" r="4" fill="#4fc3f7"/>
+              </svg>
+            </div><!-- /compass-rose-wrap -->
+          </div><!-- /weather-main -->
+
+          <!-- Forecast date/time picker -->
+          <div id="forecast-controls">
+            <select id="date-select" title="Forecast date"></select>
+            <select id="time-select" title="Forecast hour"></select>
+            <button id="btn-forecast">Check</button>
+            <button id="btn-live">Live</button>
+            <div id="forecast-label"></div>
+          </div>
+
+        </div><!-- /weather-content -->
+      </div><!-- /weather-panel -->
+
+      <!-- Trail conditions list -->
+      <div class="section-title trail-list-header">Trail Conditions</div>
+      <div id="trail-list"></div>
+
+      <!-- Admin footer -->
+      <div id="admin-footer">
+        <span id="admin-hint">Tap a trail to set its heading</span>
+        <div class="config-actions">
+          <button id="btn-export" title="Download all settings as bike-wind-config.json">
+            &#128190; Save config
+          </button>
+          <label class="btn-config-load" title="Restore settings from bike-wind-config.json">
+            &#128193; Load config
+            <input type="file" id="config-file-input" accept=".json">
+          </label>
+          <span id="config-msg" class="config-msg"></span>
+        </div>
+        <button id="btn-admin-toggle">
+          <span>&#9881;</span> Admin Mode
+        </button>
+      </div>
+
+    </aside><!-- /sidebar -->
+  </main>
+
+  <!-- ── Admin Compass Modal ─────────────────────────────── -->
+  <div id="compass-modal" class="modal-overlay hidden"
+       role="dialog" aria-modal="true" aria-labelledby="modal-trail-name">
+    <div class="modal-box">
+
+      <div class="modal-trail-name" id="modal-trail-name">Trail Name</div>
+      <span id="modal-diff-label" class="modal-diff"></span>
+      <p class="modal-subtitle" id="modal-subtitle">Drag to set the direction the rider travels</p>
+
+      <!-- Interactive compass — tick marks added by buildCompassTicks() in app.js -->
+      <svg id="admin-compass"
+           viewBox="0 0 240 240" width="210" height="210"
+           aria-label="Set trail heading">
+
+        <!-- Background circle -->
+        <circle cx="120" cy="120" r="108" class="admin-compass-ring" stroke-width="1.5"/>
+
+        <!-- ── Tick marks are injected here by buildCompassTicks() ── -->
+
+        <!-- Cardinal labels -->
+        <text x="120" y="17"  text-anchor="middle" font-size="13" font-weight="700"
+              fill="#7d8590" font-family="sans-serif">N</text>
+        <text x="223" y="125" text-anchor="middle" font-size="13" font-weight="700"
+              fill="#7d8590" font-family="sans-serif">E</text>
+        <text x="120" y="233" text-anchor="middle" font-size="13" font-weight="700"
+              fill="#7d8590" font-family="sans-serif">S</text>
+        <text x="17"  y="125" text-anchor="middle" font-size="13" font-weight="700"
+              fill="#7d8590" font-family="sans-serif">W</text>
+
+        <!-- Intercardinal labels (smaller) -->
+        <text x="191" y="51"  text-anchor="middle" font-size="10" fill="#484f58" font-family="sans-serif">NE</text>
+        <text x="191" y="196" text-anchor="middle" font-size="10" fill="#484f58" font-family="sans-serif">SE</text>
+        <text x="49"  y="196" text-anchor="middle" font-size="10" fill="#484f58" font-family="sans-serif">SW</text>
+        <text x="49"  y="51"  text-anchor="middle" font-size="10" fill="#484f58" font-family="sans-serif">NW</text>
+
+        <!-- Needle — group rotated by JS; 0° = pointing North -->
+        <g id="compass-needle" transform="rotate(0, 120, 120)">
+          <!-- Forward shaft and arrowhead (trail heading direction) -->
+          <line x1="120" y1="118" x2="120" y2="30"
+                stroke="#ffd700" stroke-width="3" stroke-linecap="round"/>
+          <polygon points="120,20 113,36 127,36" fill="#ffd700"/>
+
+          <!-- Opposite (rear) dashed indicator -->
+          <line x1="120" y1="122" x2="120" y2="208"
+                stroke="rgba(255,215,0,0.22)" stroke-width="2"
+                stroke-dasharray="5,5" stroke-linecap="round"/>
+          <circle cx="120" cy="208" r="3.5" fill="rgba(255,215,0,0.22)"/>
+        </g>
+
+        <!-- Centre dot -->
+        <circle cx="120" cy="120" r="5" fill="#fff"/>
+      </svg>
+
+      <div id="heading-display">0&deg; N</div>
+
+      <div class="modal-buttons">
+        <button id="btn-modal-cancel">Cancel</button>
+        <button id="btn-modal-save">Save Heading</button>
+      </div>
+
+    </div><!-- /modal-box -->
+  </div><!-- /compass-modal -->
+
+  <!-- Scripts — order matters: data → utilities → app -->
+  <script src="parks.js"></script>
+  <script src="wind.js"></script>
+  <script src="weather.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>
