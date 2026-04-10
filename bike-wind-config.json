@@ -7,7 +7,11 @@
         "fm": 180,
         "ds": 209,
         "ruhmtrousers": 284,
-        "mt": 203
+        "mt": 203,
+        "bt": 197,
+        "ss": 221,
+        "j1": 179,
+        "rattrap": 222
       },
       "order": [
         "bxc",
@@ -41,6 +45,15 @@
         "fx",
         "dz",
         "hp"
+      ]
+    },
+    "phoenix": {
+      "headings": {},
+      "order": [
+        "shop_west",
+        "shop_east",
+        "dj_side",
+        "asgard"
       ]
     }
   }
