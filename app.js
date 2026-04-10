@@ -632,7 +632,7 @@ function buildTrailDetailHTML(trail, wind, heading) {
       html += '</div>';
     }
   } else {
-    html += '<div class="detail-no-heading">Trail direction not set &mdash; tap <strong>Admin Mode</strong> to configure.</div>';
+    html += '<div class="detail-no-heading">Trail direction not set &mdash; tap <strong>Settings</strong> to configure.</div>';
   }
 
   html += '</div>'; // detail-text
@@ -707,7 +707,7 @@ function toggleAdminMode() {
     list.classList.remove("admin-mode");
     sidebar.classList.remove("admin-mode");
     btn.classList.remove("active");
-    btn.innerHTML = "<span>\u2699</span> Admin Mode";
+    btn.innerHTML = "<span>\u2699</span> Settings";
   }
 }
 
