@@ -112,6 +112,21 @@ function updateWeatherDisplay(wind) {
     arrow.setAttribute("transform", "rotate(" + wind.fromDeg + ", 80, 80)");
   }
 
+  // Weather conditions (temp + icon + rain)
+  var condEl = document.getElementById("weather-conditions");
+  if (condEl) {
+    if (wind.weatherCode !== undefined && wind.weatherCode !== null) {
+      var icon = getWeatherIcon(wind.weatherCode);
+      var temp = wind.tempC !== undefined ? Math.round(wind.tempC) + "\xb0C" : "";
+      var rain = wind.precipProb !== undefined
+        ? wind.precipProb + "% rain"
+        : (wind.precipMm > 0 ? wind.precipMm.toFixed(1) + "mm rain" : "");
+      condEl.textContent = [icon, temp, rain].filter(Boolean).join("  \xb7  ");
+    } else {
+      condEl.textContent = "";
+    }
+  }
+
   updateMapWindOverlay(wind);
   renderTrailList(wind);
 }
@@ -454,9 +469,13 @@ function renderTrailList(wind) {
     row.dataset.trailId = trail.id;
     row.innerHTML =
       '<span class="difficulty-dot ' + diffClass + '" title="' + (trail.difficulty || "ungraded") + '"></span>' +
-      '<span class="trail-name">' + trail.name + "</span>" +
-      badgeHtml +
-      '<button class="btn-edit-heading' + (isHeadingDefault(trail) ? ' heading-default' : '') + '" data-trail-id="' + trail.id + '">' + headingLabel + "</button>" +
+      '<div class="trail-row-body">' +
+        '<span class="trail-name">' + trail.name + '</span>' +
+        '<div class="trail-row-controls">' +
+          badgeHtml +
+          '<button class="btn-edit-heading' + (isHeadingDefault(trail) ? ' heading-default' : '') + '" data-trail-id="' + trail.id + '">' + headingLabel + '</button>' +
+        '</div>' +
+      '</div>' +
       '<div class="btn-move-group">' +
         '<button class="btn-move btn-move-up" data-trail-id="' + trail.id + '"' + (trailIdx === 0 ? ' disabled' : '') + ' title="Move up">\u25b2</button>' +
         '<button class="btn-move btn-move-down" data-trail-id="' + trail.id + '"' + (trailIdx === sortedLen - 1 ? ' disabled' : '') + ' title="Move down">\u25bc</button>' +

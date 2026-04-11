@@ -21,8 +21,8 @@ async function fetchParkWeather(park) {
     "https://api.open-meteo.com/v1/forecast",
     `?latitude=${lat}`,
     `&longitude=${lon}`,
-    "&current=wind_speed_10m,wind_direction_10m,wind_gusts_10m",
-    "&hourly=wind_speed_10m,wind_direction_10m,wind_gusts_10m",
+    "&current=wind_speed_10m,wind_direction_10m,wind_gusts_10m,temperature_2m,precipitation,weather_code",
+    "&hourly=wind_speed_10m,wind_direction_10m,wind_gusts_10m,temperature_2m,precipitation_probability,weather_code",
     "&wind_speed_unit=mph",
     "&forecast_days=7",
     "&timezone=Europe%2FLondon"
@@ -46,9 +46,12 @@ async function fetchParkWeather(park) {
 function getCurrentWind(data) {
   const c = data.current;
   return {
-    speedMph: Math.round(c.wind_speed_10m),
-    fromDeg:  Math.round(c.wind_direction_10m),
-    gustsMph: Math.round(c.wind_gusts_10m)
+    speedMph:    Math.round(c.wind_speed_10m),
+    fromDeg:     Math.round(c.wind_direction_10m),
+    gustsMph:    Math.round(c.wind_gusts_10m),
+    tempC:       c.temperature_2m,
+    precipMm:    c.precipitation,
+    weatherCode: c.weather_code
   };
 }
 
@@ -64,10 +67,29 @@ function getForecastWind(data, isoDate, hour) {
   const idx = data.hourly.time.indexOf(target);
   if (idx === -1) return null;
   return {
-    speedMph: Math.round(data.hourly.wind_speed_10m[idx]),
-    fromDeg:  Math.round(data.hourly.wind_direction_10m[idx]),
-    gustsMph: Math.round(data.hourly.wind_gusts_10m[idx])
+    speedMph:    Math.round(data.hourly.wind_speed_10m[idx]),
+    fromDeg:     Math.round(data.hourly.wind_direction_10m[idx]),
+    gustsMph:    Math.round(data.hourly.wind_gusts_10m[idx]),
+    tempC:       data.hourly.temperature_2m[idx],
+    precipProb:  data.hourly.precipitation_probability[idx],
+    weatherCode: data.hourly.weather_code[idx]
   };
+}
+
+/**
+ * Convert a WMO weather code to a simple emoji icon.
+ * @param {number} code
+ * @returns {string}
+ */
+function getWeatherIcon(code) {
+  if (code === 0)         return "\u2600\ufe0f";  // ☀️ clear
+  if (code <= 2)          return "\uD83C\uDF24\ufe0f"; // 🌤️ mainly clear
+  if (code <= 3)          return "\u2601\ufe0f";  // ☁️ overcast
+  if (code <= 48)         return "\uD83C\uDF2B\ufe0f"; // 🌫️ fog
+  if (code <= 67)         return "\uD83C\uDF27\ufe0f"; // 🌧️ drizzle/rain
+  if (code <= 77)         return "\uD83C\uDF28\ufe0f"; // 🌨️ snow
+  if (code <= 82)         return "\uD83C\uDF26\ufe0f"; // 🌦️ showers
+  return "\u26C8\ufe0f";                          // ⛈️ thunderstorm
 }
 
 /**
