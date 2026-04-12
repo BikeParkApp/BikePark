@@ -11,20 +11,19 @@ function getWindImpact(trailHeadingDeg, windFromDeg) {
     return { status: "unknown", angleDiff: null };
   }
 
-  // Wind FROM X degrees means the air is moving TOWARDS (X + 180)
-  const windTowardsDeg = (windFromDeg + 180) % 360;
-
-  // Angle between trail heading and wind direction
-  let diff = Math.abs(trailHeadingDeg - windTowardsDeg);
+  // Compare trail heading against wind SOURCE direction.
+  // Small angle → wind from in front → headwind.
+  // Large angle (≈180°) → wind from behind → tailwind.
+  let diff = Math.abs(trailHeadingDeg - windFromDeg);
   if (diff > 180) diff = 360 - diff;
 
   let status;
   if (diff <= 45) {
-    status = "headwind";   // Wind blowing into the rider
+    status = "headwind";   // Wind from in front — blowing into the rider
   } else if (diff >= 135) {
-    status = "tailwind";   // Wind pushing the rider
+    status = "tailwind";   // Wind from behind — pushing the rider
   } else {
-    status = "crosswind";  // Most dangerous for jumps
+    status = "crosswind";  // Side-on — most dangerous for jumps
   }
 
   return { status, angleDiff: Math.round(diff) };
