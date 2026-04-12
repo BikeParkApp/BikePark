@@ -106,10 +106,10 @@ function updateWeatherDisplay(wind) {
   sevEl.textContent = sev.charAt(0).toUpperCase() + sev.slice(1);
   sevEl.className   = "severity-label sev-" + sev;
 
-  // Rotate compass rose arrow to point FROM wind source
+  // Rotate compass rose arrow to show wind travel direction (where it's going TO)
   var arrow = document.getElementById("wind-rose-arrow");
   if (arrow) {
-    arrow.setAttribute("transform", "rotate(" + wind.fromDeg + ", 80, 80)");
+    arrow.setAttribute("transform", "rotate(" + ((wind.fromDeg + 180) % 360) + ", 80, 80)");
   }
 
   // Weather conditions (temp + icon + rain)
@@ -147,10 +147,10 @@ function updateMapWindOverlay(wind) {
   var orientGroup = document.getElementById("map-compass-orient");
   if (orientGroup) orientGroup.setAttribute("transform", "rotate(" + mapNorthDeg + ", 40, 40)");
 
-  // Wind arrow sits inside the orient group — its rotation is relative to that group,
-  // so the absolute screen direction = mapNorthDeg + fromDeg (correct map alignment).
+  // Wind arrow sits inside the orient group — its rotation is relative to that group.
+  // Use (fromDeg + 180) so the arrow shows travel direction (where wind is going TO).
   var arrow = document.getElementById("map-wind-arrow");
-  if (arrow) arrow.setAttribute("transform", "rotate(" + wind.fromDeg + ", 40, 40)");
+  if (arrow) arrow.setAttribute("transform", "rotate(" + ((wind.fromDeg + 180) % 360) + ", 40, 40)");
 
   var label = document.getElementById("map-wind-label");
   if (label) label.textContent = Math.round(wind.speedMph) + " mph " + toCardinal(wind.fromDeg);
